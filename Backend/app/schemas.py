@@ -1,12 +1,12 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class RegistrationCreate(BaseModel):
-    parent_name: str
-    email: EmailStr
+    parent_name: str = Field(..., min_length=2, max_length=50)
+    email: EmailStr 
     phone: str
-    child_name: str
-    child_age: int
+    child_name: str = Field(..., min_length=2, max_length=15)
+    child_age: int 
     class_level: str
 
 
