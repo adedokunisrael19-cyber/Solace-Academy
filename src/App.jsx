@@ -1,3 +1,5 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
@@ -9,7 +11,10 @@ import Registration from "./components/Registration";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 
-function App() {
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./pages/AdminLogin";
+
+function Home() {
   return(
     <div>
       <Navbar/>
@@ -31,4 +36,17 @@ function App() {
   );
 }
 
+
+function App(){
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+      </Routes>
+    </BrowserRouter> 
+
+  )
+}
 export default App;

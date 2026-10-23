@@ -2,11 +2,19 @@ import { useState } from "react";
 
 function Registration(){
     const [formData, setFormData] = useState({
-        parentName: "", email : "",
-        phone: "", childName: "",
-        childAge: "", subject: "",
-        });
+    parentName: "",
+    email: "",
+    phone: "",
+    childName: "",
+    childAge: "",
+    childClass: "",
+    subject: "",
+});
 
+
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState("");
+    const [error, setError] = useState("");
 
     const handleChange = (event)=> {
         const { name, value}= event.target;
@@ -17,10 +25,65 @@ function Registration(){
         });
     };
 
-    const handleSubmit = (event)=> {
-        event.preventDefault();
-        console.log(formData);
+    
+const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    setLoading(true);
+    setMessage("");
+    setError("");
+
+    const registrationData = {
+        parent_name: formData.parentName,
+        email: formData.email,
+        phone: formData.phone,
+        child_name: formData.childName,
+        child_age: formData.childAge,
+        class_level: formData.childClass,
+        subject: formData.subject,
     };
+
+    try {
+        const response = await fetch(
+            "http://127.0.0.1:8000/registrations",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(registrationData),
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "Registration failed. Please check your details and try again."
+            );
+        }
+
+        const result = await response.json();
+
+        setMessage(
+            `Registration successful! Your reference number is ${result.id}.`
+        );
+
+        setFormData({
+            parentName: "",
+            email: "",
+            phone: "",
+            childName: "",
+            childAge: "",
+            childClass: "",
+            subject: "",
+        });
+    } catch (err) {
+        setError(
+            err.message || "Unable to connect to the server. Please try again."
+        );
+    } finally {
+        setLoading(false);
+    }
+};
 
     return(
        <section id="registration" className="bg-slate-50 px-6 py-20">
@@ -44,10 +107,23 @@ function Registration(){
 
       
         <form
+
+        
           onSubmit={handleSubmit}
           className="mx-auto mt-12 max-w-3xl rounded-2xl bg-white p-6 shadow-sm md:p-8"
         >
 
+          {message && (
+                <p role="status" className="mb-4 rounded-lg bg-green-50 p-4 text-green-700">
+                    {message}
+                </p>
+            )}
+
+            {error && (
+                <p role="alert" className="mb-4 rounded-lg bg-red-50 p-4 text-red-700">
+                    {error}
+                </p>
+            )}
           <div className="grid gap-6 md:grid-cols-2">
 
             <div>
@@ -205,13 +281,12 @@ function Registration(){
 
           </div>
 
-          <button
-            type="submit"
-            className="mt-8 w-full rounded-lg bg-blue-700 px-6 py-3 font-semibold text-white transition hover:bg-blue-800"
-          >
-            Submit Registration
+         <button
+              type="submit"
+              disabled={loading}
+              className="mt-8 w-full rounded-lg bg-blue-700 px-6 py-3 font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60">
+              {loading ? "Submitting..." : "Submit Registration"}
           </button>
-
         </form>
 
       </div>
