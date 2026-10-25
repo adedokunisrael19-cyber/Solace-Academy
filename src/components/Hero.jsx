@@ -1,5 +1,5 @@
 import heroImage from "../assets/Hero-Learning.jpg"
-import hero from "../assets/learn.jpg"
+import hero from "../assets/Learn.jpg"
 
 
 function Hero() {
